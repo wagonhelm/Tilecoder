@@ -1,6 +1,6 @@
 import gym
 import numpy as np
-env = gym.make("CartPole-v0")
+env = gym.make("MountainCar-v0")
 
 class tilecoder:
 	
@@ -14,7 +14,6 @@ class tilecoder:
 		self.actions = env.action_space.n
 		self.n = self.numTiles * self.actions
 		self.tileSize = np.divide(np.subtract(self.maxIn,self.minIn), self.tilesPerTiling-1)
-		print(self.maxIn, self.minIn)	
 	
 	def getFeatures(self, variables):
 		### ENSURES LOWEST POSSIBLE INPUT IS ALWAYS 0
@@ -88,7 +87,7 @@ if __name__ == "__main__":
 			theta += np.multiply((alpha*delta), tile.oneHotVector(F,action))
 			state = state2
 
-		# if episodeNum > 100:
-		# 	if sum(rewardTracker[episodeNum-100:episodeNum])/100 >= -110:
-		# 		print('Solve in {} Episodes'.format(episodeNum))
-		# 		break
+		if episodeNum > 100:
+			if sum(rewardTracker[episodeNum-100:episodeNum])/100 >= -110:
+				print('Solve in {} Episodes'.format(episodeNum))
+				break

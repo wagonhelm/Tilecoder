@@ -6,9 +6,11 @@ class tilecoder:
 	
 	def __init__(self, numTilings, tilesPerTiling):
 		self.maxIn = env.observation_space.high
+		self.maxIn[0] = 3
 		self.maxIn[1] = 4
 		self.maxIn[3] = 4
 		self.minIn = env.observation_space.low
+		self.minIn[0] = -3
 		self.minIn[1] = -4
 		self.minIn[3] = -4
 		self.numTilings = numTilings
@@ -58,24 +60,34 @@ class tilecoder:
 
 if __name__ == "__main__":
 
-	tile = tilecoder(4,21)
+	tile = tilecoder(4,22)
 	theta = np.random.uniform(-0.001, 0, size=(tile.n))
 	alpha = (.1/ tile.numTilings)
 	gamma = 1
 	numEpisodes = 100000
 	rewardTracker = []
+	epsilon = 0.5
 
 	for episodeNum in range(1,numEpisodes+1):
 		G = 0
+		step = 0
 		state = env.reset()
 		while True:
 			#env.render()
 			F = tile.getFeatures(state)
 			Q = tile.getQ(F, theta)
-			action = np.argmax(Q)
+			
+			if np.random.rand() > epsilon:
+				action = env.action_space.sample()
+				epsilon += epsilon * 0.0001
+			else:
+				action = np.argmax(Q)
+
 			state2, reward, done, info = env.step(action)
 			G += reward
-			delta = G - Q[action]
+			delta = G*(gamma**step) - Q[action]
+			step += 1
+
 			if done == True:
 				theta += np.multiply((alpha*delta), tile.oneHotVector(F,action))
 				rewardTracker.append(G)
@@ -87,6 +99,7 @@ if __name__ == "__main__":
 
 		print(G)
 		if episodeNum % 25 == 0:
+			print ('Epsilon = {}'.format(epsilon))
 			print('Average Total Reward = {}'.format((sum(rewardTracker)/episodeNum)))
 		if sum(rewardTracker[episodeNum-100:episodeNum])/100 >= 195:
 			print('Solve in {} Episodes'.format(episodeNum))

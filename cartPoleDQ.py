@@ -6,14 +6,10 @@ import time
 class tilecoder:
 	
 	def __init__(self, numTilings, tilesPerTiling):
-		self.maxIn = env.observation_space.high
-		self.maxIn[0] = 3
-		self.maxIn[1] = 4
-		self.maxIn[3] = 4
-		self.minIn = env.observation_space.low
-		self.minIn[0] = -3
-		self.minIn[1] = -4
-		self.minIn[3] = -4
+		# self.maxIn = env.observation_space.high
+		self.maxIn = [3, 3.5, 0.25, 3.5]
+		#self.minIn = env.observation_space.low
+		self.minIn = [-3, -3.5, -0.25, -3.5]
 		self.numTilings = numTilings
 		self.tilesPerTiling = tilesPerTiling
 		self.dim = len(self.maxIn)
@@ -66,7 +62,7 @@ if __name__ == "__main__":
 	theta2 = np.random.uniform(-0.001, 0, size=(tile.n))
 	alpha = .1/ tile.numTilings
 	gamma = 1
-	epsilon = 0.65
+	epsilon = 0.5
 	numEpisodes = 100000
 	rewardTracker = []
 
@@ -74,7 +70,7 @@ if __name__ == "__main__":
 		G = 0
 		state = env.reset()
 		while True:
-			env.render()
+			#env.render()
 			F = tile.getFeatures(state)
 			Q1 = tile.getQ(F, theta1)
 			Q2 = tile.getQ(F, theta2)
@@ -112,9 +108,10 @@ if __name__ == "__main__":
 
 			state = state2
 
-		print(G)
+		#print(G)
 		if episodeNum % 25 == 0:
-			print ('Epsilon = {}'.format(epsilon))
+			print ('Epsilon = {}  Alpha = {}'.format(epsilon, alpha))
+			print('Average Last 25 = {}'.format(sum(rewardTracker[episodeNum-25:episodeNum])/25))
 			print('Average Total Reward = {}'.format((sum(rewardTracker)/episodeNum)))
 
 		if sum(rewardTracker[episodeNum-100:episodeNum])/100 >= 195:

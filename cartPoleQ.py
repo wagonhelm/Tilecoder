@@ -5,14 +5,9 @@ env = gym.make("CartPole-v0")
 class tilecoder:
 	
 	def __init__(self, numTilings, tilesPerTiling):
-		self.maxIn = env.observation_space.high
-		self.maxIn[0] = 3
-		self.maxIn[1] = 4
-		self.maxIn[3] = 4
-		self.minIn = env.observation_space.low
-		self.minIn[0] = -3
-		self.minIn[1] = -4
-		self.minIn[3] = -4
+		self.maxIn = [3, 3.5, 0.25, 3.5]
+		#self.minIn = env.observation_space.low
+		self.minIn = [-3, -3.5, -0.25, -3.5]
 		self.numTilings = numTilings
 		self.tilesPerTiling = tilesPerTiling
 		self.dim = len(self.maxIn)
@@ -79,7 +74,7 @@ if __name__ == "__main__":
 			
 			if np.random.rand() > epsilon:
 				action = env.action_space.sample()
-				epsilon += epsilon * 0.0001
+				epsilon += epsilon * 0.00005
 			else:
 				action = np.argmax(Q)
 
@@ -97,10 +92,12 @@ if __name__ == "__main__":
 			theta += np.multiply((alpha*delta), tile.oneHotVector(F,action))
 			state = state2
 
-		print(G)
+		#print(G)
 		if episodeNum % 25 == 0:
-			print ('Epsilon = {}'.format(epsilon))
+			print ('Epsilon = {}  Alpha = {}'.format(epsilon, alpha))
+			print('Average Last 25 = {}'.format(sum(rewardTracker[episodeNum-25:episodeNum])/25))
 			print('Average Total Reward = {}'.format((sum(rewardTracker)/episodeNum)))
+
 		if sum(rewardTracker[episodeNum-100:episodeNum])/100 >= 195:
 			print('Solve in {} Episodes'.format(episodeNum))
 			break

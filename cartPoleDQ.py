@@ -66,7 +66,7 @@ if __name__ == "__main__":
 	theta2 = np.random.uniform(-0.001, 0, size=(tile.n))
 	alpha = .1/ tile.numTilings
 	gamma = 1
-	epsilon = 0.70
+	epsilon = 0.65
 	numEpisodes = 100000
 	rewardTracker = []
 

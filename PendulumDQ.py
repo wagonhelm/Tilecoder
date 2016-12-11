@@ -1,13 +1,17 @@
 import gym
 import numpy as np
-env = gym.make("MountainCar-v0")
+env = gym.make("cartPole-v0")
 import time
 
 class tilecoder:
 	
 	def __init__(self, numTilings, tilesPerTiling):
 		self.maxIn = env.observation_space.high
+		self.maxIn[1] = 5
+		self.maxIn[3] = 5
 		self.minIn = env.observation_space.low
+		self.minIn[1] = -5
+		self.minIn[3] = -5
 		self.numTilings = numTilings
 		self.tilesPerTiling = tilesPerTiling
 		self.dim = len(self.maxIn)

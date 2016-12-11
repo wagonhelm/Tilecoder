@@ -7,4 +7,4 @@ Solve mountain car problem using tilecoding and a Q or Double Q Algorithim. The 
 
 I feel like a huge part of solving CartPole quickly is lucking out with a good random theta initialization.  Double Q seems to perform a little better probably due to the fact it randomly initializes two values for theta.  This example is allready beginning to show the limitations of Tilecoding as I had to drastically increase the number of tilings and the size of the tiles.  Have'nt expirimented with tweaking values too much.  Had to overide max and min values for cart and pole velocity because gym defaults where extremely high numbers which threw my tilecoder off.
 
-![alt tag](https://github.com/wagonhelm/mountainCar/blob/master/tileCoderFinal.gif)
+![alt tag](https://github.com/wagonhelm/RL/blob/master/tileCoderFinal.gif)

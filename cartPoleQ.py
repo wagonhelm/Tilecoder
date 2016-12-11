@@ -58,7 +58,7 @@ class tilecoder:
 
 if __name__ == "__main__":
 
-	tile = tilecoder(6,22)
+	tile = tilecoder(4,21)
 	theta = np.random.uniform(-0.001, 0, size=(tile.n))
 	alpha = (.1/ tile.numTilings)
 	gamma = 1
@@ -87,7 +87,7 @@ if __name__ == "__main__":
 
 		print(G)
 		if episodeNum % 25 == 0:
-			print('Average = {}'.format((sum(rewardTracker)/episodeNum)))
+			print('Average Total Reward = {}'.format((sum(rewardTracker)/episodeNum)))
 		if sum(rewardTracker[episodeNum-100:episodeNum])/100 >= 195:
 			print('Solve in {} Episodes'.format(episodeNum))
 			break

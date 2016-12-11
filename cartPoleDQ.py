@@ -7,11 +7,11 @@ class tilecoder:
 	
 	def __init__(self, numTilings, tilesPerTiling):
 		self.maxIn = env.observation_space.high
-		self.maxIn[1] = 4
-		self.maxIn[3] = 4
+		self.maxIn[1] = 5
+		self.maxIn[3] = 5
 		self.minIn = env.observation_space.low
-		self.minIn[1] = -4
-		self.minIn[3] = -4
+		self.minIn[1] = -5
+		self.minIn[3] = -5
 		self.numTilings = numTilings
 		self.tilesPerTiling = tilesPerTiling
 		self.dim = len(self.maxIn)
@@ -59,7 +59,7 @@ class tilecoder:
 
 if __name__ == "__main__":
 
-	tile = tilecoder(6,22)
+	tile = tilecoder(4,22)
 	theta1 = np.random.uniform(-0.001, 0, size=(tile.n))
 	theta2 = np.random.uniform(-0.001, 0, size=(tile.n))
 	alpha = .1/ tile.numTilings
@@ -103,10 +103,10 @@ if __name__ == "__main__":
 
 			state = state2
 
-		print(G)		
+		print(G)
 		if episodeNum % 25 == 0:
-			print('Average = {}'.format((sum(rewardTracker)/episodeNum)))
-		if episodeNum > 100:
-			if sum(rewardTracker[episodeNum-100:episodeNum])/100 >= 195:
-				print('Solve in {} Episodes'.format(episodeNum))
-				break
+			print('Average Total Reward = {}'.format((sum(rewardTracker)/episodeNum)))
+
+		if sum(rewardTracker[episodeNum-100:episodeNum])/100 >= 195:
+			print('Solve in {} Episodes'.format(episodeNum))
+			break

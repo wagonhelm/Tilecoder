@@ -1,17 +1,16 @@
+## NOT SOLVED: Need to:
+# CREATE ACTION SPACE WHERE ACTION WILL BE RANDOM FLOAT BETWEEN A DISCRETE MAX AND MIN VALUE - POSSIBLY USE TILECODING
+
 import gym
 import numpy as np
-env = gym.make("cartPole-v0")
+env = gym.make("Pendulum-v0")
 import time
 
 class tilecoder:
 	
 	def __init__(self, numTilings, tilesPerTiling):
 		self.maxIn = env.observation_space.high
-		self.maxIn[1] = 5
-		self.maxIn[3] = 5
 		self.minIn = env.observation_space.low
-		self.minIn[1] = -5
-		self.minIn[3] = -5
 		self.numTilings = numTilings
 		self.tilesPerTiling = tilesPerTiling
 		self.dim = len(self.maxIn)

@@ -60,17 +60,17 @@ if __name__ == "__main__":
 	tile = tilecoder(4,22)
 	theta1 = np.random.uniform(-0.001, 0, size=(tile.n))
 	theta2 = np.random.uniform(-0.001, 0, size=(tile.n))
-	alpha = .1/ tile.numTilings
+	alpha = .15
 	gamma = 1
 	epsilon = 0.5
-	numEpisodes = 100000
+	numEpisodes = 5000
 	rewardTracker = []
 
 	for episodeNum in range(1,numEpisodes+1):
 		G = 0
 		state = env.reset()
 		while True:
-			#env.render()
+			env.render()
 			F = tile.getFeatures(state)
 			Q1 = tile.getQ(F, theta1)
 			Q2 = tile.getQ(F, theta2)

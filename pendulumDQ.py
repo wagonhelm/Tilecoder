@@ -1,11 +1,11 @@
-## NOT SOLVED - NEED TO:
-# CREATE ACTION SPACE WHERE ACTION WILL BE RANDOM FLOAT 
-# BETWEEN A DISCRETE MAX AND MIN VALUE - POSSIBLY USE TILECODING
+## APPEARS TO BE LEARNING VERY SLOWLY 
+## ACTION CHOICES AND TILECODER NEED TO BE TWEAKED
 
 import gym
 import numpy as np
 env = gym.make("Pendulum-v0")
 import time
+import random as rand
 
 class tilecoder:
 	
@@ -16,7 +16,7 @@ class tilecoder:
 		self.tilesPerTiling = tilesPerTiling
 		self.dim = len(self.maxIn)
 		self.numTiles = (self.tilesPerTiling**self.dim) * self.numTilings
-		self.actions = env.action_space.n
+		self.actions = 11
 		self.n = self.numTiles * self.actions
 		self.tileSize = np.divide(np.subtract(self.maxIn,self.minIn), self.tilesPerTiling-1)
 		
@@ -56,61 +56,69 @@ class tilecoder:
 			Q[i] = tile.getVal(theta, features, i)
 		return Q
 
+	def action2float(self, a):
+		if a == 0:
+			return([rand.uniform(-2,-1.5)])
+		if a == 1:
+			return([rand.uniform(-1.5,-1)])
+		if a == 2:
+			return([rand.uniform(-1,-0.75)])
+		if a == 3:
+			return([rand.uniform(-0.75, -0.5)])
+		if a == 4:
+			return([rand.uniform(-0.5,-0.25)])
+		if a == 5:
+			return([0])
+		if a == 6:
+			return([rand.uniform(0.25, 0.5)])
+		if a == 7:
+			return([rand.uniform(0.5, 0.75)])
+		if a == 8:
+			return([rand.uniform(0.75, 1)])
+		if a == 9:
+			return([rand.uniform(1,1.5)])
+		if a == 10:
+			return([rand.uniform(1.5,2)])
+
 
 if __name__ == "__main__":
 
 	tile = tilecoder(4,20)
 	theta1 = np.random.uniform(-0.001, 0, size=(tile.n))
 	theta2 = np.random.uniform(-0.001, 0, size=(tile.n))
-	alpha = .1/ tile.numTilings
-	gamma = 1
+	alpha = .1/ tile.numTilings * 2
 	numEpisodes = 100000
 	episodeSum = 0
+	rewardtracker = []
 
 	for episodeNum in range(1,numEpisodes+1):
 		G = 0
 		state = env.reset()
-		while True:
-			#env.render()
+		for steps in range(10000):
 			F = tile.getFeatures(state)
 			Q1 = tile.getQ(F, theta1)
 			Q2 = tile.getQ(F, theta2)
 			action = np.argmax(Q1+Q2)
 			
-			state2, reward, done, info = env.step(action)
+			state2, reward, done, info = env.step(tile.action2float(action))
 			G += reward
 			
-			delta1 = reward - Q2[action]
-			delta2 = reward - Q1[action]
-
-			if done == True:
-				if np.random.rand() > 0.5:
-					theta1 += np.multiply((alpha*delta1), tile.oneHotVector(F,action))
-				else:
-					theta2 += np.multiply((alpha*delta2), tile.oneHotVector(F,action))
-				
-				episodeSum += G
-				
-				if episodeNum %100 == 0:
-					print('Average reward = {}'.format(episodeSum / 100))
-					episodeSum = 0
-				break
-			
+			delta1 = reward - Q1[action]
+			delta2 = reward - Q2[action]
+		
 			Q1_ = tile.getQ(tile.getFeatures(state2), theta1)
 			Q2_ = tile.getQ(tile.getFeatures(state2), theta2)
 			delta1 = reward + gamma*(Q2_[np.argmax(Q1_)] - Q1[action])
 			delta2 = reward + gamma*(Q1_[np.argmax(Q2_)] - Q2[action])
 
-			#print(Q1_, Q2_, delta1_, delta2_)
-
 			if np.random.rand() > 0.5:
-				#print(alpha*(delta2_- delta1))
 				theta1 += np.multiply((alpha*delta1), tile.oneHotVector(F,action))
 			else:
-				#print(alpha*(delta2_- delta1))
 				theta2 += np.multiply((alpha*delta2), tile.oneHotVector(F,action))
 
-			#print(sum(theta1), sum(theta2))
-			#input("Debug!")
 			state = state2
+
+		print("Episode Total Reward = {}".format(G))
+		rewardtracker.append(G)
+		print("Total Average = {}".format(sum(rewardtracker)/episodeNum))
 			

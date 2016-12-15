@@ -58,16 +58,17 @@ if __name__ == "__main__":
 	tile = tilecoder(4,20)
 	theta1 = np.random.uniform(-0.001, 0, size=(tile.n))
 	theta2 = np.random.uniform(-0.001, 0, size=(tile.n))
-	alpha = .1/ tile.numTilings
+	alpha = .1/ tile.numTilings*6
 	gamma = 1
 	numEpisodes = 100000
 	episodeSum = 0
+	rewardTracker = []
 
 	for episodeNum in range(1,numEpisodes+1):
 		G = 0
 		state = env.reset()
 		while True:
-			#env.render()
+			env.render()
 			F = tile.getFeatures(state)
 			Q1 = tile.getQ(F, theta1)
 			Q2 = tile.getQ(F, theta2)
@@ -76,8 +77,8 @@ if __name__ == "__main__":
 			state2, reward, done, info = env.step(action)
 			G += reward
 			
-			delta1 = reward - Q2[action]
-			delta2 = reward - Q1[action]
+			delta1 = reward - Q1[action]
+			delta2 = reward - Q2[action]
 
 			if done == True:
 				if np.random.rand() > 0.5:
@@ -86,6 +87,7 @@ if __name__ == "__main__":
 					theta2 += np.multiply((alpha*delta2), tile.oneHotVector(F,action))
 				
 				episodeSum += G
+				rewardTracker.append(G)
 				
 				if episodeNum %100 == 0:
 					print('Average reward = {}'.format(episodeSum / 100))
@@ -97,16 +99,14 @@ if __name__ == "__main__":
 			delta1 = reward + gamma*(Q2_[np.argmax(Q1_)] - Q1[action])
 			delta2 = reward + gamma*(Q1_[np.argmax(Q2_)] - Q2[action])
 
-			#print(Q1_, Q2_, delta1_, delta2_)
-
 			if np.random.rand() > 0.5:
-				#print(alpha*(delta2_- delta1))
 				theta1 += np.multiply((alpha*delta1), tile.oneHotVector(F,action))
 			else:
-				#print(alpha*(delta2_- delta1))
 				theta2 += np.multiply((alpha*delta2), tile.oneHotVector(F,action))
 
-			#print(sum(theta1), sum(theta2))
-			#input("Debug!")
 			state = state2
 			
+		if episodeNum > 100:
+			if sum(rewardTracker[episodeNum-100:episodeNum])/100 >= -110:
+				print('Solve in {} Episodes'.format(episodeNum))
+				break

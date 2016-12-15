@@ -70,7 +70,7 @@ if __name__ == "__main__":
 		G = 0
 		state = env.reset()
 		while True:
-			env.render()
+			#env.render()
 			F = tile.getFeatures(state)
 			Q1 = tile.getQ(F, theta1)
 			Q2 = tile.getQ(F, theta2)
@@ -85,8 +85,8 @@ if __name__ == "__main__":
 			state2, reward, done, info = env.step(action)
 			G += reward
 			
-			delta1 = G - Q2[action]
-			delta2 = G - Q1[action]
+			delta1 = G - Q1[action]
+			delta2 = G - Q2[action]
 
 			if done == True:
 				if np.random.rand() > 0.5:

@@ -18,7 +18,7 @@ class Tilecoder:
         self.tileSize = np.divide(np.ones(self.dim)*self.maxNormal, self.tilesPerTiling-1)
 
     def getFeatures(self, variables):
-        ### Ensures range is always between 0 and self.maxValue
+        # Ensures range is always between 0 and self.maxValue
         values = np.zeros(self.dim)
         for i in range(len(env.observation_space.shape)+1):
             values[i] = self.maxNormal * ((variables[i] - self.minVal[i])/(self.maxVal[i]-self.minVal[i]))
